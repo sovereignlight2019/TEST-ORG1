@@ -1,0 +1,11 @@
+---
+infra.controller_configuration.projects:
+  - name: Project 1
+    organization: TEST-ORG1
+    scm_type: git
+    scm_url: 'https://github.com/your-repo/project1.git'
+  - name: Project 2
+    organization: TEST-ORG1
+    scm_type: git
+    scm_url: 'https://github.com/your-repo/project2.git'
+

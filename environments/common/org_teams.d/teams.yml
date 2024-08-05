@@ -1,0 +1,9 @@
+---
+infra.controller_configuration.teams:
+  - name: Team 1
+    organization: TEST-ORG1
+    description: Team 1 description
+  - name: Team 2
+    organization: TEST-ORG1
+    description: Team 2 description
+
