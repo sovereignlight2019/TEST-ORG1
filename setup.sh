@@ -7,12 +7,12 @@ PLAYBOOKS_REPO="git@github.com:sovereignlight2019/CasC-Playbooks.git"
 CONFIG_DIRS=("credentials" "groups" "job_templates" "projects" "schedules" "workflow_job_templates" "credential_types" "inventories" "roles" "teams")
 
 # Check for necessary environment variables
-if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${VAULT_PASSWORD}" ]; then
+if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${ANSIBLE_VAULT_PASSWORD}" ]; then
   echo "ORG_ADMIN, ORG_PASSWORD, and VAULT_PASSWORD environment variables must be set."
   echo "Current values:"
   echo "ORG_ADMIN: ${ORG_ADMIN}"
   echo "ORG_PASSWORD: ${ORG_PASSWORD}"
-  echo "VAULT_PASSWORD: ${VAULT_PASSWORD}"
+  echo "ANSIBLE_VAULT_PASSWORD: ${ANSIBLE_VAULT_PASSWORD}"
   exit 1
 fi
 
@@ -63,7 +63,7 @@ EOL
 org_admin: ${ORG_ADMIN}
 org_password: ${ORG_PASSWORD}
 EOL
-    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${VAULT_PASSWORD}")
+    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${ANSIBLE_VAULT_PASSWORD}")
   fi
 done
 
