@@ -12,7 +12,7 @@ if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${VAULT_PASSWORD}"
   echo "Current values:"
   echo "ORG_ADMIN: ${ORG_ADMIN}"
   echo "ORG_PASSWORD: ${ORG_PASSWORD}"
-  echo "VAULT_PASSWORD: ${VAULT_PASSWORD}"
+  echo "ANSIBLE_VAULT_PASSWORD: ${ANSIBLE_VAULT_PASSWORD}"
   exit 1
 fi
 
@@ -58,7 +58,7 @@ EOL
 org_admin: ${ORG_ADMIN}
 org_password: ${ORG_PASSWORD}
 EOL
-    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${VAULT_PASSWORD}")
+    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${ANSIBLE_VAULT_PASSWORD}")
   fi
 done
 
