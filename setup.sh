@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# test
+
 # Configurable variables
 REPO_NAME="TEST-ORG1"
 ENVIRONMENTS=("common" "dev" "staging" "production")
