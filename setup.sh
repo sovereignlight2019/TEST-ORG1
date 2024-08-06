@@ -3,23 +3,23 @@
 # Configurable variables
 REPO_NAME="TEST-ORG1"
 ENVIRONMENTS=("common" "dev" "staging" "production")
-PLAYBOOKS_REPO="git@github.com:sovereignlight2019/CasC-Playbooks.git"
+PLAYBOOKS_REPO="https://$GH_PAT@github.com/sovereignlight2019/CasC-Playbooks.git"
 CONFIG_DIRS=("credentials" "groups" "job_templates" "projects" "schedules" "workflow_job_templates" "credential_types" "inventories" "roles" "teams")
 
 # Check for necessary environment variables
-if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${ANSIBLE_VAULT_PASSWORD}" ]; then
+if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${VAULT_PASSWORD}" ]; then
   echo "ORG_ADMIN, ORG_PASSWORD, and VAULT_PASSWORD environment variables must be set."
   echo "Current values:"
   echo "ORG_ADMIN: ${ORG_ADMIN}"
   echo "ORG_PASSWORD: ${ORG_PASSWORD}"
-  echo "ANSIBLE_VAULT_PASSWORD: ${ANSIBLE_VAULT_PASSWORD}"
+  echo "VAULT_PASSWORD: ${VAULT_PASSWORD}"
   exit 1
 fi
 
 # Initialize git repository if not already done
 if [ ! -d ".git" ]; then
   git init
-  git remote add origin git@github.com:your-username/${REPO_NAME}.git
+  git remote add origin https://$GH_PAT@github.com/sovereignlight2019/${REPO_NAME}.git
 fi
 
 # Remove existing playbooks directory if it exists and clone the playbooks repository into a temporary directory
@@ -63,7 +63,7 @@ EOL
 org_admin: ${ORG_ADMIN}
 org_password: ${ORG_PASSWORD}
 EOL
-    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${ANSIBLE_VAULT_PASSWORD}")
+    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${VAULT_PASSWORD}")
   fi
 done
 
@@ -98,8 +98,12 @@ for file in "${!CONFIG_FILES[@]}"; do
   fi
 done
 
+# Configure Git identity
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+
 # Add, commit, and push changes to the dev branch
-git checkout -b $BRANCH_NAME
+git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
 git add .
 git commit -m "Setup initial directory structure and playbooks"
 git push -u origin $BRANCH_NAME

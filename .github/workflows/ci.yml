@@ -50,7 +50,8 @@ jobs:
       env:
         ORG_ADMIN: ${{ env.ORG_ADMIN }}
         ORG_PASSWORD: ${{ env.ORG_PASSWORD }}
-        ANSIBLE_VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
+        VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         chmod +x setup.sh
         ./setup.sh
