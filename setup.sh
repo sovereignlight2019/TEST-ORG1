@@ -33,10 +33,6 @@ fi
 
 git clone $PLAYBOOKS_REPO temp_playbooks
 
-# Debug statement to check the structure of temp_playbooks directory
-echo "Contents of temp_playbooks:"
-ls -la temp_playbooks
-
 # Ensure playbooks directory is structured correctly
 if [ -d "temp_playbooks/playbooks" ]; then
   mv temp_playbooks/playbooks .
@@ -45,10 +41,6 @@ else
 fi
 
 rm -rf temp_playbooks
-
-# Debug statement to check the structure of playbooks directory after move
-echo "Contents of playbooks:"
-ls -la playbooks
 
 # Create directory structure based on ENVIRONMENTS and CONFIG_DIRS
 for env in "${ENVIRONMENTS[@]}"; do
@@ -78,6 +70,9 @@ org_password: ${ORG_PASSWORD}
 EOL
     ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${VAULT_PASSWORD}")
   fi
+
+  # Change permissions to ensure the file is readable
+  chmod 644 environments/${env}/org_credentials.d/org_credentials.yml
 done
 
 # Example configurations for common environment
