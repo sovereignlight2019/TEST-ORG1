@@ -15,6 +15,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
+        token: ${{ secrets.GH_PAT }}  # Use PAT for authentication
         submodules: true  # Ensure submodules are checked out
 
     - name: Set up Python

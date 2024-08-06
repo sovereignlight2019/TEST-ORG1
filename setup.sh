@@ -108,7 +108,7 @@ git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 
 # Add, commit, and push changes to the branch
-git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
+git checkout $BRANCH_NAME || git checkout -b $BRANCH_NAME
 git add .
 git commit -m "Setup initial directory structure and playbooks"
 git push -u origin $BRANCH_NAME --force
