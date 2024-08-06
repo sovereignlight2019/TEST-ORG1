@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - staging
+      - common
       - production
 
 jobs:
@@ -46,6 +47,10 @@ jobs:
           echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_PRODUCTION }}" >> $GITHUB_ENV
           echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
           echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
+        elif [ "$BRANCH_NAME" == "common" ]; then
+          echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_COMMON }}" >> $GITHUB_ENV
+          echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_COMMON }}" >> $GITHUB_ENV
+          echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_COMMON }}" >> $GITHUB_ENV
         fi
 
     - name: Run Setup Script
