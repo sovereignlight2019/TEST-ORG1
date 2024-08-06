@@ -1,4 +1,4 @@
-name: CI/CD for Ansible Playbook
+name: CI/CD for Ansible Playbook (Dev)
 
 on:
   push:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        submodules: true  # Ensure submodules are checked out
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -28,9 +30,15 @@ jobs:
         ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: |
         echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
-        ansible-vault decrypt environments/dev/org_credentials.d/org_credentials.yml --vault-password-file vault_pass.txt
+        ansible-vault decrypt environments/dev/org_admin_credentials.yml --vault-password-file vault_pass.txt
+
+    - name: List Files in Playbooks Directory
+      run: |
+        ls -la playbooks
 
     - name: Run Ansible Playbook
+      env:
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: |
         ansible-playbook -i inventory/dev/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
 
