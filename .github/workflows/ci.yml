@@ -11,22 +11,6 @@ jobs:
   run-ansible-playbook:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        env:
-          - name: dev
-            org_admin: ${{ secrets.ORG_ADMIN_DEV }}
-            org_password: ${{ secrets.ORG_PASSWORD_DEV }}
-            vault_password: ${{ secrets.ANSIBLE_VAULT_PASSWORD_DEV }}
-          - name: staging
-            org_admin: ${{ secrets.ORG_ADMIN_STAGING }}
-            org_password: ${{ secrets.ORG_PASSWORD_STAGING }}
-            vault_password: ${{ secrets.ANSIBLE_VAULT_PASSWORD_STAGING }}
-          - name: production
-            org_admin: ${{ secrets.ORG_ADMIN_PRODUCTION }}
-            org_password: ${{ secrets.ORG_PASSWORD_PRODUCTION }}
-            vault_password: ${{ secrets.ANSIBLE_VAULT_PASSWORD_PRODUCTION }}
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -44,11 +28,22 @@ jobs:
         pip install ansible
 
     - name: Set Environment Variables
+      id: set-env-vars
       run: |
-        echo "BRANCH_NAME=${{ matrix.env.name }}" >> $GITHUB_ENV
-        echo "ORG_ADMIN=${{ matrix.env.org_admin }}" >> $GITHUB_ENV
-        echo "ORG_PASSWORD=${{ matrix.env.org_password }}" >> $GITHUB_ENV
-        echo "ANSIBLE_VAULT_PASSWORD=${{ matrix.env.vault_password }}" >> $GITHUB_ENV
+        BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr '[:lower:]' '[:upper:]')
+        if [ "$BRANCH_NAME" == "DEV" ]; then
+          echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_DEV }}" >> $GITHUB_ENV
+          echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_DEV }}" >> $GITHUB_ENV
+          echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_DEV }}" >> $GITHUB_ENV
+        elif [ "$BRANCH_NAME" == "STAGING" ]; then
+          echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_STAGING }}" >> $GITHUB_ENV
+          echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_STAGING }}" >> $GITHUB_ENV
+          echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_STAGING }}" >> $GITHUB_ENV
+        elif [ "$BRANCH_NAME" == "PRODUCTION" ]; then
+          echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_PRODUCTION }}" >> $GITHUB_ENV
+          echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
+          echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
+        fi
 
     - name: Run Setup Script
       run: |
@@ -58,7 +53,7 @@ jobs:
     - name: Decrypt Ansible Vault File
       run: |
         echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
-        ansible-vault decrypt environments/${{ matrix.env.name }}/org_admin_credentials.yml --vault-password-file vault_pass.txt
+        ansible-vault decrypt environments/$BRANCH_NAME/org_admin_credentials.yml --vault-password-file vault_pass.txt
 
     - name: List Files in Playbooks Directory
       run: |
@@ -66,5 +61,5 @@ jobs:
 
     - name: Run Ansible Playbook
       run: |
-        ansible-playbook -i inventory/${{ matrix.env.name }}/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
+        ansible-playbook -i inventory/$BRANCH_NAME/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
 
