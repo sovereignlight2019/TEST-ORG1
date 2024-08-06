@@ -1,13 +1,22 @@
-name: CI/CD for Ansible Playbook (Dev)
+name: CI/CD for Ansible Playbook
 
 on:
   push:
     branches:
       - dev
+      - staging
+      - common
+      - production
 
 jobs:
   run-ansible-playbook:
     runs-on: ubuntu-latest
+
+    env:
+      ENVIRONMENT: ${{ github.ref_name }}
+      ORG_ADMIN: ${{ secrets['ORG_ADMIN_' + github.ref_name.toUpperCase()] }}
+      ORG_PASSWORD: ${{ secrets['ORG_PASSWORD_' + github.ref_name.toUpperCase()] }}
+      ANSIBLE_VAULT_PASSWORD: ${{ secrets['ANSIBLE_VAULT_PASSWORD_' + github.ref_name.toUpperCase()] }}
 
     steps:
     - name: Checkout repository
@@ -31,19 +40,15 @@ jobs:
         ./setup.sh
 
     - name: Decrypt Ansible Vault File
-      env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: |
         echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
-        ansible-vault decrypt environments/dev/org_admin_credentials.yml --vault-password-file vault_pass.txt
+        ansible-vault decrypt environments/$ENVIRONMENT/org_admin_credentials.yml --vault-password-file vault_pass.txt
 
     - name: List Files in Playbooks Directory
       run: |
         ls -la playbooks
 
     - name: Run Ansible Playbook
-      env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: |
-        ansible-playbook -i inventory/dev/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
+        ansible-playbook -i inventory/$ENVIRONMENT/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
 
