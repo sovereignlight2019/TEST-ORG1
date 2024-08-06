@@ -25,12 +25,12 @@ jobs:
 
     - name: Decrypt Ansible Vault File
       env:
-        ANSIBLE_VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+        ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
       run: |
         echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
         ansible-vault decrypt environments/dev/org_credentials.d/org_credentials.yml --vault-password-file vault_pass.txt
 
     - name: Run Ansible Playbook
       run: |
-        ansible-playbook -i inventory/dev/hosts playbooks/configure_controller.yml --vault-password-file vault_pass.txt
+        ansible-playbook -i inventory/dev/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
 
