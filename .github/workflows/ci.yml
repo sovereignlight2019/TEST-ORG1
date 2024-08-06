@@ -15,7 +15,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
         submodules: true  # Ensure submodules are checked out
 
     - name: Set up Python
@@ -52,7 +51,7 @@ jobs:
         ORG_ADMIN: ${{ env.ORG_ADMIN }}
         ORG_PASSWORD: ${{ env.ORG_PASSWORD }}
         VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
-        GH_PAT: ${{ secrets.GITHUB_TOKEN }}  # Use GitHub token for authentication
+        GH_PAT: ${{ secrets.GH_PAT }}  # Use PAT for authentication
       run: |
         chmod +x setup.sh
         ./setup.sh
