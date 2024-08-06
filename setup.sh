@@ -22,10 +22,15 @@ if [ ! -d ".git" ]; then
   git remote add origin git@github.com:your-username/${REPO_NAME}.git
 fi
 
-# Clone playbooks repository if it does not exist
-if [ ! -d "playbooks" ]; then
-  git clone $PLAYBOOKS_REPO playbooks
+# Remove existing playbooks directory if it exists and clone the dev branch of the playbooks repository
+if [ -d "playbooks" ]; then
+  rm -rf playbooks
 fi
+
+git clone --branch $PLAYBOOKS_BRANCH $PLAYBOOKS_REPO temp_playbooks
+mkdir playbooks
+mv temp_playbooks/playbooks/* playbooks/
+rm -rf temp_playbooks
 
 # Create directory structure based on ENVIRONMENTS and CONFIG_DIRS
 for env in "${ENVIRONMENTS[@]}"; do
