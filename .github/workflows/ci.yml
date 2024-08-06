@@ -31,6 +31,7 @@ jobs:
       id: set-env-vars
       run: |
         BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr '[:lower:]' '[:upper:]')
+        echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
         if [ "$BRANCH_NAME" == "DEV" ]; then
           echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_DEV }}" >> $GITHUB_ENV
           echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_DEV }}" >> $GITHUB_ENV
@@ -46,6 +47,10 @@ jobs:
         fi
 
     - name: Run Setup Script
+      env:
+        ORG_ADMIN: ${{ env.ORG_ADMIN }}
+        ORG_PASSWORD: ${{ env.ORG_PASSWORD }}
+        VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
       run: |
         chmod +x setup.sh
         ./setup.sh
