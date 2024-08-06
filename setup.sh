@@ -3,7 +3,7 @@
 # Configurable variables
 REPO_NAME="TEST-ORG1"
 ENVIRONMENTS=("common" "dev" "staging" "production")
-PLAYBOOKS_REPO="https://$GH_PAT@github.com/sovereignlight2019/CasC-Playbooks.git"
+PLAYBOOKS_REPO="https://${GH_PAT}@github.com/sovereignlight2019/CasC-Playbooks.git"
 CONFIG_DIRS=("credentials" "groups" "job_templates" "projects" "schedules" "workflow_job_templates" "credential_types" "inventories" "roles" "teams")
 
 # Check for necessary environment variables
@@ -19,7 +19,7 @@ fi
 # Initialize git repository if not already done
 if [ ! -d ".git" ]; then
   git init
-  git remote add origin https://$GH_PAT@github.com/sovereignlight2019/${REPO_NAME}.git
+  git remote add origin https://${GH_PAT}@github.com/sovereignlight2019/${REPO_NAME}.git
 fi
 
 # Remove existing playbooks directory if it exists and clone the playbooks repository into a temporary directory
@@ -102,7 +102,7 @@ done
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 
-# Add, commit, and push changes to the dev branch
+# Add, commit, and push changes to the branch
 git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
 git add .
 git commit -m "Setup initial directory structure and playbooks"
