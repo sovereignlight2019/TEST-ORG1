@@ -32,9 +32,14 @@ if [ -d "temp_playbooks" ]; then
 fi
 
 git clone $PLAYBOOKS_REPO temp_playbooks
-mkdir playbooks
-mv temp_playbooks/* playbooks/
-mv temp_playbooks/.* playbooks/ 2>/dev/null || true
+
+# Ensure playbooks directory is structured correctly
+if [ -d "temp_playbooks/playbooks" ]; then
+  mv temp_playbooks/playbooks .
+else
+  mv temp_playbooks playbooks
+fi
+
 rm -rf temp_playbooks
 
 # Create directory structure based on ENVIRONMENTS and CONFIG_DIRS
