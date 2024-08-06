@@ -32,9 +32,9 @@ jobs:
       run: |
         BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr '[:lower:]' '[:upper:]')
         echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-        echo "ORG_ADMIN=$(echo ${{ secrets['ORG_ADMIN_' + BRANCH_NAME] }})" >> $GITHUB_ENV
-        echo "ORG_PASSWORD=$(echo ${{ secrets['ORG_PASSWORD_' + BRANCH_NAME] }})" >> $GITHUB_ENV
-        echo "ANSIBLE_VAULT_PASSWORD=$(echo ${{ secrets['ANSIBLE_VAULT_PASSWORD_' + BRANCH_NAME] }})" >> $GITHUB_ENV
+        echo "ORG_ADMIN=$(echo ${{ secrets['ORG_ADMIN_'${BRANCH_NAME}}})" >> $GITHUB_ENV
+        echo "ORG_PASSWORD=$(echo ${{ secrets['ORG_PASSWORD_'${BRANCH_NAME}}})" >> $GITHUB_ENV
+        echo "ANSIBLE_VAULT_PASSWORD=$(echo ${{ secrets['ANSIBLE_VAULT_PASSWORD_'${BRANCH_NAME}}})" >> $GITHUB_ENV
 
     - name: Run Setup Script
       run: |
