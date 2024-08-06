@@ -12,7 +12,7 @@ if [ -z "${ORG_ADMIN}" ] || [ -z "${ORG_PASSWORD}" ] || [ -z "${VAULT_PASSWORD}"
   echo "Current values:"
   echo "ORG_ADMIN: ${ORG_ADMIN}"
   echo "ORG_PASSWORD: ${ORG_PASSWORD}"
-  echo "ANSIBLE_VAULT_PASSWORD: ${ANSIBLE_VAULT_PASSWORD}"
+  echo "VAULT_PASSWORD: ${VAULT_PASSWORD}"
   exit 1
 fi
 
@@ -22,14 +22,19 @@ if [ ! -d ".git" ]; then
   git remote add origin git@github.com:your-username/${REPO_NAME}.git
 fi
 
-# Remove existing playbooks directory if it exists and clone the dev branch of the playbooks repository
+# Remove existing playbooks directory if it exists and clone the playbooks repository into a temporary directory
 if [ -d "playbooks" ]; then
   rm -rf playbooks
 fi
 
-git clone --branch $PLAYBOOKS_BRANCH $PLAYBOOKS_REPO temp_playbooks
+if [ -d "temp_playbooks" ]; then
+  rm -rf temp_playbooks
+fi
+
+git clone $PLAYBOOKS_REPO temp_playbooks
 mkdir playbooks
-mv temp_playbooks/playbooks/* playbooks/
+mv temp_playbooks/* playbooks/
+mv temp_playbooks/.* playbooks/ 2>/dev/null || true
 rm -rf temp_playbooks
 
 # Create directory structure based on ENVIRONMENTS and CONFIG_DIRS
@@ -58,7 +63,7 @@ EOL
 org_admin: ${ORG_ADMIN}
 org_password: ${ORG_PASSWORD}
 EOL
-    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${ANSIBLE_VAULT_PASSWORD}")
+    ansible-vault encrypt environments/${env}/org_credentials.d/org_credentials.yml --vault-password-file <(echo -n "${VAULT_PASSWORD}")
   fi
 done
 
@@ -92,6 +97,12 @@ for file in "${!CONFIG_FILES[@]}"; do
     echo "${CONFIG_FILES[$file]}" > environments/common/$file
   fi
 done
+
+# Add, commit, and push changes to the dev branch
+git checkout -b $BRANCH_NAME
+git add .
+git commit -m "Setup initial directory structure and playbooks"
+git push -u origin $BRANCH_NAME
 
 echo "Repository setup complete."
 

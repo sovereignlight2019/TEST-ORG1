@@ -30,17 +30,17 @@ jobs:
     - name: Set Environment Variables
       id: set-env-vars
       run: |
-        BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}" | tr '[:lower:]' '[:upper:]')
+        BRANCH_NAME=$(echo "${GITHUB_REF#refs/heads/}")
         echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
-        if [ "$BRANCH_NAME" == "DEV" ]; then
+        if [ "$BRANCH_NAME" == "dev" ]; then
           echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_DEV }}" >> $GITHUB_ENV
           echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_DEV }}" >> $GITHUB_ENV
           echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_DEV }}" >> $GITHUB_ENV
-        elif [ "$BRANCH_NAME" == "STAGING" ]; then
+        elif [ "$BRANCH_NAME" == "staging" ]; then
           echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_STAGING }}" >> $GITHUB_ENV
           echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_STAGING }}" >> $GITHUB_ENV
           echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_STAGING }}" >> $GITHUB_ENV
-        elif [ "$BRANCH_NAME" == "PRODUCTION" ]; then
+        elif [ "$BRANCH_NAME" == "production" ]; then
           echo "ORG_ADMIN=${{ secrets.ORG_ADMIN_PRODUCTION }}" >> $GITHUB_ENV
           echo "ORG_PASSWORD=${{ secrets.ORG_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
           echo "ANSIBLE_VAULT_PASSWORD=${{ secrets.ANSIBLE_VAULT_PASSWORD_PRODUCTION }}" >> $GITHUB_ENV
@@ -50,7 +50,7 @@ jobs:
       env:
         ORG_ADMIN: ${{ env.ORG_ADMIN }}
         ORG_PASSWORD: ${{ env.ORG_PASSWORD }}
-        VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
+        ANSIBLE_VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
       run: |
         chmod +x setup.sh
         ./setup.sh
