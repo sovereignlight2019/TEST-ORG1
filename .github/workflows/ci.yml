@@ -72,7 +72,13 @@ jobs:
       run: |
         ls -la playbooks
 
+    - name: Check Current Directory
+      run: |
+        pwd
+        ls -la
+
     - name: Run Ansible Playbook
       run: |
         ansible-playbook -i inventory/$BRANCH_NAME/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
+      working-directory: ./
 
