@@ -33,6 +33,10 @@ fi
 
 git clone $PLAYBOOKS_REPO temp_playbooks
 
+# Debug statement to check the structure of temp_playbooks directory
+echo "Contents of temp_playbooks:"
+ls -la temp_playbooks
+
 # Ensure playbooks directory is structured correctly
 if [ -d "temp_playbooks/playbooks" ]; then
   mv temp_playbooks/playbooks .
@@ -41,6 +45,10 @@ else
 fi
 
 rm -rf temp_playbooks
+
+# Debug statement to check the structure of playbooks directory after move
+echo "Contents of playbooks:"
+ls -la playbooks
 
 # Create directory structure based on ENVIRONMENTS and CONFIG_DIRS
 for env in "${ENVIRONMENTS[@]}"; do
