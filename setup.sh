@@ -50,7 +50,7 @@ for env in "${ENVIRONMENTS[@]}"; do
   mkdir -p inventory/${env}
 
   # Create inventory files if they do not exist
-  if [ ! -f inventory/${env}/hosts]; then
+  if [ ! -f inventory/${env}/hosts ]; then
     cat <<EOL > inventory/${env}/hosts
 [localhost]
 localhost ansible_connection=local
@@ -58,12 +58,12 @@ EOL
   fi
 
   # Create main.yml for each environment if it does not exist
-  if [ ! -f environments/${env}/main.yml]; then
+  if [ ! -f environments/${env}/main.yml ]; then
     touch environments/${env}/main.yml
   fi
 
   # Store and encrypt org credentials if they do not exist
-  if [ ! -f environments/${env}/org_credentials.d/org_credentials.yml]; then
+  if [ ! -f environments/${env}/org_credentials.d/org_credentials.yml ]; then
     cat <<EOL > environments/${env}/org_credentials.d/org_credentials.yml
 org_admin: ${ORG_ADMIN}
 org_password: ${ORG_PASSWORD}
@@ -111,7 +111,7 @@ git config --global user.name "Your Name"
 git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
 git add .
 git commit -m "Setup initial directory structure and playbooks"
-git push -u origin $BRANCH_NAME
+git push -u origin $BRANCH_NAME --force
 
 echo "Repository setup complete."
 
