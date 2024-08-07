@@ -82,7 +82,10 @@ jobs:
         ls -la
 
     - name: Run Ansible Playbook
+      env:
+        ORG_ADMIN: ${{ env.ORG_ADMIN }}
+        ORG_PASSWORD: ${{ env.ORG_PASSWORD }}
+        VAULT_PASSWORD: ${{ env.ANSIBLE_VAULT_PASSWORD }}
       run: |
         ansible-playbook -i inventory/$BRANCH_NAME/hosts playbooks/configure_org.yml --vault-password-file vault_pass.txt
       working-directory: ./
-
