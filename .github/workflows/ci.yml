@@ -81,6 +81,10 @@ jobs:
         pwd
         ls -la
 
+    - name: Display Playbook Contents
+      run: |
+        cat playbooks/configure_org.yml
+
     - name: Run Ansible Playbook
       env:
         ORG_ADMIN: ${{ env.ORG_ADMIN }}
