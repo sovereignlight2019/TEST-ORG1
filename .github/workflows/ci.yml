@@ -68,6 +68,10 @@ jobs:
         echo "$ANSIBLE_VAULT_PASSWORD" > vault_pass.txt
         ansible-vault decrypt environments/$BRANCH_NAME/org_admin_credentials.yml --vault-password-file vault_pass.txt
 
+    - name: Display Decrypted File Contents
+      run: |
+        cat environments/$BRANCH_NAME/org_admin_credentials.yml
+
     - name: List Files in Environments Directory
       run: |
         ls -la environments/$BRANCH_NAME
