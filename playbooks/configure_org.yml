@@ -1,0 +1,29 @@
+---
+- name: Playbook to configure Ansible Controller post installation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  pre_tasks:
+    - name: Include environment-level vars
+      ansible.builtin.include_vars:
+        file: "../environments/{{ lookup('env', 'BRANCH_NAME') }}/org_admin_credentials.yml"
+        
+    - name: Set org_admin and org_password variables
+      set_fact:
+        org_admin: "{{ org_admin }}"
+        org_password: "{{ org_password }}"
+
+    - name: Include organization-specific vars
+      ansible.builtin.include_vars:
+        dir: "../environments/{{ lookup('env', 'BRANCH_NAME') }}/org_teams.d"
+        extensions: ["yml"]
+
+  roles:
+    - role: infra.controller_configuration.teams
+      vars:
+        controller_hostname: "{{ controller_hostname }}"
+        controller_username: "{{ org_admin }}"
+        controller_password: "{{ org_password }}"
+      when: controller_teams is defined
+
